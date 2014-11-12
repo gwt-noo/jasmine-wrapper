@@ -1,0 +1,16 @@
+apply plugin: 'java'
+apply plugin: 'gwt'
+
+gwt {
+    gwtVersion = project.gwtVersion
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+    modules 'jasmine.example.JasmineExample'
+    def jasmineProject = project(':jasmine-gwt-wrapper')
+    src += files(jasmineProject.sourceSets.main.allJava.srcDirs)
+    src += files(jasmineProject.sourceSets.main.output.resourcesDir)
+}
+
+dependencies {
+    compile project(':jasmine-gwt-wrapper')
+}

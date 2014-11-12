@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+
+        maven {
+            url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
+        }
+    }
+
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
+    }
+}
+
+
+
+apply from: "${rootDir}/dependencies.gradle"
+
+
+subprojects {
+
+    apply plugin: 'java'
+
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+    group = 'com.github.gwt-noo'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile libraries.gwt_user
+    }
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
+
+task release() {
+
+}
