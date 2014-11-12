@@ -55,3 +55,8 @@ compile(group: 'com.github.gwt-noo', name: 'jasmine-gwt-wrapper', version: 'VERS
 
 ## 0.1.1
  - Initial version
+
+# License
+
+This library include the jasmine library, which is distributed with the MIT license.
+So some Apache2 and MIT licensing apply.
