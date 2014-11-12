@@ -25,7 +25,9 @@ gradlew :jasmine-gwt-wrapper:bintrayUpload
 # Maven / Gradle
 
 The repository is located at
-```http://dl.bintray.com/gwt-noo/maven```
+```
+http://dl.bintray.com/gwt-noo/maven
+```
 
 Only version 0.1.3 and on will be available there.
 
