@@ -21,10 +21,25 @@
     (function () {
         var moduleName = /^[^:]+:\/\/[^/]+\/([^/]+)/.exec(location.href)[1];
         var script = document.createElement('script');
+        var loaded = false;
         script.src = '/' + moduleName + '/' + moduleName + '.recompile.nocache.js';
         script.type = 'text/javascript';
         script.language = 'javascript';
+        script.onload = function() {
+            loaded = true;
+        };
         document.head.appendChild(script);
+
+        setTimeout(function() {
+            // if we didn't load the script, we should add the no recompile version
+            if(!loaded) {
+                var script = document.createElement('script');
+                script.src = '/' + moduleName + '/' + moduleName + '.nocache.js';
+                script.type = 'text/javascript';
+                script.language = 'javascript';
+                document.head.appendChild(script);
+            }
+        }, 500)
     })();
 
 </script>

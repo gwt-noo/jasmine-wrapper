@@ -48,6 +48,10 @@ compile(group: 'com.github.gwt-noo', name: 'jasmine-gwt-wrapper', version: 'VERS
 
 # Change log
 
+## 0.1.4
+ - Added support for compiling the test. In the runner.html,
+    if no .recompile file is loaded, the normal .nocache will be loaded
+
 ## 0.1.3
  - Changing namespace
  - Hosting of binaries moved
