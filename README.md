@@ -4,6 +4,7 @@ Simple GWT wrapper for jasmine testing framework
 
 Look inside the example module...
 
+[![Build Status](https://drone.io/github.com/gwt-noo/jasmine-wrapper/status.png)](https://drone.io/github.com/gwt-noo/jasmine-wrapper/latest)
 
 To run the example:
 ```Shell
