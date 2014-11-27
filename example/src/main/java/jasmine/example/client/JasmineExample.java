@@ -1,5 +1,6 @@
 package jasmine.example.client;
 
+import com.google.gwt.core.client.GWT;
 import noo.testing.jasmine.client.DescribeCallback;
 import com.google.gwt.core.client.EntryPoint;
 
@@ -12,6 +13,8 @@ import static noo.testing.jasmine.client.Jasmine.it;
  */
 public class JasmineExample implements EntryPoint {
     public void onModuleLoad() {
+        ((TestRegistry)GWT.create(TestRegistry.class)).registerTests();
+
         describe("some test", new DescribeCallback() {
             @Override
             protected void doDescribe() {

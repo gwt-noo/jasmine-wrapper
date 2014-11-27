@@ -3,4 +3,8 @@
 <module>
     <inherits name='com.google.gwt.core.Core'/>
     <entry-point class="noo.testing.jasmine.client.JasmineMain"/>
+
+    <generate-with class="noo.testing.jasmine.rebind.JasmineGenerator">
+        <when-type-assignable class="noo.testing.jasmine.client.rebind.JasmineTestRegistry"/>
+    </generate-with>
 </module>

@@ -48,6 +48,10 @@ compile(group: 'com.github.gwt-noo', name: 'jasmine-gwt-wrapper', version: 'VERS
 
 # Change log
 
+## 0.1.7
+ - Adding more of the expectation API
+ - New generator to make test writing cleaner in JAVA
+
 ## 0.1.6
  - Once again, recompilation happens when the test page is refreshed
  - If no recompilation, the runner will load the normal .nocache module file

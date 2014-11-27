@@ -2,14 +2,13 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
-
         maven {
-            url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
+            url 'http://dl.bintray.com/steffenschaefer/maven'
         }
     }
 
     dependencies {
-        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.5'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
     }
 }
@@ -33,6 +32,7 @@ subprojects {
 
     dependencies {
         compile libraries.gwt_user
+        compile libraries.gwt_dev
     }
 }
 

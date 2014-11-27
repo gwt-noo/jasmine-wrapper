@@ -16,7 +16,7 @@ jar {
 def bintrayUser = hasProperty('bintrayUser') ? getProperty('bintrayUser') : '';
 def bintrayKey = hasProperty('bintrayKey') ? getProperty('bintrayKey') : '';
 
-def versionBase = '0.1.6'
+def versionBase = '0.1.7'
 version = versionBase //+ (project.hasProperty('release') ? '' : '-test')
 
 publishing {
