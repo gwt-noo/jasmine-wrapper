@@ -48,6 +48,9 @@ compile(group: 'com.github.gwt-noo', name: 'jasmine-gwt-wrapper', version: 'VERS
 
 # Change log
 
+## 0.1.8
+ - Adding support for sub describes in generator
+
 ## 0.1.7
  - Adding more of the expectation API
  - New generator to make test writing cleaner in JAVA

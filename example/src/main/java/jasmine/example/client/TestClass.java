@@ -29,4 +29,17 @@ public class TestClass extends JasmineTestClass {
 
     }
 
+    public AnotherTest subTest() {
+        return new AnotherTest();
+    }
+
+    @Describe("Inner describe")
+    public class AnotherTest {
+
+        @It("should be inside the outer describe")
+        public void inner() {
+
+        }
+    }
+
 }

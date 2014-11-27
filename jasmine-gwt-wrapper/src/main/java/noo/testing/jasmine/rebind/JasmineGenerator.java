@@ -50,10 +50,22 @@ public class JasmineGenerator extends Generator {
         String testClassCanonicalName = testClass.getCanonicalName();
         TypeOracle typeOracle = context.getTypeOracle();
         JClassType testType = typeOracle.findType(testClassCanonicalName);
+        writeJasmineDescribeCode(logger, testType, writer, 0, null);
+    }
+
+    private void writeJasmineDescribeCode(TreeLogger logger, JClassType testType, SourceWriter writer, int depth, String instantiation) throws UnableToCompleteException {
         Describe describeAn = testType.getAnnotation(Describe.class);
+        String className = testType.getQualifiedSourceName();
+
         if (describeAn == null) {
-            logger.log(TreeLogger.Type.ERROR, "No describe annotation on class " + testClass.getCanonicalName());
+            logger.log(TreeLogger.Type.ERROR, "No describe annotation on class " + className);
             throw new UnableToCompleteException();
+        }
+
+        String instanceName = "testInstance" + depth;
+        // no instantiation so assume we can create the class
+        if (instantiation == null) {
+            instantiation = "new " + testType.getQualifiedSourceName() + "()";
         }
 
         writer.println("noo.testing.jasmine.client.Jasmine.describe(\"%s\", new noo.testing.jasmine.client.DescribeCallback() {", describeAn.value());
@@ -63,18 +75,26 @@ public class JasmineGenerator extends Generator {
             writer.println("protected void doDescribe() {");
             writer.indent();
             {
-                writer.println("final %1$s testInstance = new %1$s();", testClassCanonicalName);
+                writer.println("final %1$s %2$s = %3$s;", className, instanceName, instantiation);
                 for (JMethod method : testType.getMethods()) {
                     if (method.getAnnotation(BeforeAll.class) != null) {
-                        writeMethodCall(logger, method, writer);
+                        writeMethodCall(logger, method, writer, instanceName);
                     }
                 }
                 for (JMethod method : testType.getMethods()) {
-                    if (method.getAnnotation(It.class) != null) writeJasmineItCode(logger, context, method, writer);
-                    if (method.getAnnotation(BeforeEach.class) != null)
-                        writeJasmineBeforeAfterEachCode(logger, method, writer, true);
-                    if (method.getAnnotation(AfterEach.class) != null)
-                        writeJasmineBeforeAfterEachCode(logger, method, writer, false);
+                    if (method.getAnnotation(It.class) != null) writeJasmineItCode(logger, method, writer, instanceName);
+                    else if (method.getAnnotation(BeforeEach.class) != null)
+                        writeJasmineBeforeAfterEachCode(logger, method, writer, instanceName, true);
+                    else if (method.getAnnotation(AfterEach.class) != null)
+                        writeJasmineBeforeAfterEachCode(logger, method, writer, instanceName, false);
+                    else if (method.getParameters().length == 0 && method.getReturnType() != null) {
+                        // we might have a sub-describe class
+                        JClassType cls = method.getReturnType().isClass();
+                        if (cls != null && cls.getAnnotation(Describe.class) != null) {
+                            String subInstantiation = String.format("%s.%s()", instanceName, method.getName());
+                            writeJasmineDescribeCode(logger, cls, writer, depth + 1, subInstantiation);
+                        }
+                    }
                 }
             }
             writer.outdent();
@@ -84,7 +104,7 @@ public class JasmineGenerator extends Generator {
         writer.println("});");
     }
 
-    private void writeJasmineItCode(TreeLogger logger, GeneratorContext context, JMethod method, SourceWriter writer) {
+    private void writeJasmineItCode(TreeLogger logger, JMethod method, SourceWriter writer, String instanceName) {
         It itAnnotation = method.getAnnotation(It.class);
         if (itAnnotation == null) return;
 
@@ -105,9 +125,9 @@ public class JasmineGenerator extends Generator {
             writer.indent();
             {
                 if (isAsync) {
-                    writer.println("testInstance.%s(done);", method.getName());
+                    writer.println("%s.%s(done);", instanceName, method.getName());
                 } else {
-                    writer.println("testInstance.%s();", method.getName());
+                    writer.println("%s.%s();", instanceName, method.getName());
                     writer.println("done.execute();");
                 }
             }
@@ -118,7 +138,7 @@ public class JasmineGenerator extends Generator {
         writer.println("});");
     }
 
-    private void writeJasmineBeforeAfterEachCode(TreeLogger logger, JMethod method, SourceWriter writer, boolean before) {
+    private void writeJasmineBeforeAfterEachCode(TreeLogger logger, JMethod method, SourceWriter writer, String instanceName, boolean before) {
         // make sure we have at most one argument and it's the done callback
         JParameter[] params = method.getParameters();
         if (params.length > 0 && !params[0].getType().getQualifiedBinaryName().equals(DoneCallback.class.getCanonicalName())) {
@@ -136,9 +156,9 @@ public class JasmineGenerator extends Generator {
             writer.indent();
             {
                 if (isAsync) {
-                    writer.println("testInstance.%s(done);", method.getName());
+                    writer.println("%s.%s(done);", instanceName, method.getName());
                 } else {
-                    writer.println("testInstance.%s();", method.getName());
+                    writer.println("%s.%s();", instanceName, method.getName());
                     writer.println("done.execute();");
                 }
             }
@@ -149,7 +169,7 @@ public class JasmineGenerator extends Generator {
         writer.println("});");
     }
 
-    private void writeMethodCall(TreeLogger logger, JMethod method, SourceWriter writer) throws UnableToCompleteException {
+    private void writeMethodCall(TreeLogger logger, JMethod method, SourceWriter writer, String instanceName) throws UnableToCompleteException {
         // make sure we have at most one argument and it's the done callback
         JParameter[] params = method.getParameters();
         if (params.length > 0) {
@@ -157,7 +177,7 @@ public class JasmineGenerator extends Generator {
             throw new UnableToCompleteException();
         }
 
-        writer.println("testInstance.%s();", method.getName());
+        writer.println("%s.%s();", instanceName, method.getName());
 
     }
 
