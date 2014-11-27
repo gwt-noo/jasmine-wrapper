@@ -48,6 +48,9 @@ compile(group: 'com.github.gwt-noo', name: 'jasmine-gwt-wrapper', version: 'VERS
 
 # Change log
 
+## 0.1.9
+ - Fixing runner to work in older browsers
+
 ## 0.1.8
  - Adding support for sub describes in generator
 
